@@ -3,24 +3,25 @@ package com.hojongs.paint.impl
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.hojongs.paint.model.PaintEvent
 import com.hojongs.paint.repository.ResourceRepository
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.core.io.WritableResource
+import org.springframework.stereotype.Repository
 import java.nio.ByteBuffer
 
-/**
- * @param locationPrefix example : "s3://myBucket"
- */
-class EventResourceS3Repository(
+@Repository
+class EventResourceRepository(
     private val resourceLoader: ResourceLoader,
+
+    @Value("\${ext.resource-location-prefix}")
     private val locationPrefix: String
 ) : ResourceRepository<PaintEvent> {
 
+    private val logger = LoggerFactory.getLogger(this::class.java)
     private val mapper = jacksonObjectMapper()
 
-    /**
-     * @param location example : "dir/file.log"
-     */
     override fun findByLocation(
         location: String
     ): PaintEvent = run {
@@ -36,6 +37,7 @@ class EventResourceS3Repository(
         resource.toBytes()
             .let { bytes -> ByteBuffer.wrap(bytes) }
             .let { byteBuffer -> writableChannel.write(byteBuffer) }
+            .let { writableChannel.close() }
     }
 
     private fun PaintEvent.getLocation(): String = this.hashCode().toString()
@@ -49,11 +51,13 @@ class EventResourceS3Repository(
     }
 
     private fun Resource.asByteArray(): ByteArray = run {
-        val byteBuffer = ByteBuffer.allocateDirect(this.contentLength().toInt())
+        val size = this.contentLength()
+        val byteBuffer = ByteBuffer.allocateDirect(size.toInt())
 
         val readableChannel = this.readableChannel()
         readableChannel.read(byteBuffer)
 
+        byteBuffer.flip() // set position & limit to read
         val bytes = ByteArray(this.contentLength().toInt())
         byteBuffer.get(bytes)
 

@@ -1,8 +1,11 @@
 cloud:
   aws:
     credentials:
-      use-default-aws-credentials-chain: true
+      profileName: riiid-dev
     region:
-      static: ap-northeast-1
+      static: ap-northeast-2
     stack:
       auto: false
+
+ext:
+  resource-location-prefix: s3://temp-bucket-22
