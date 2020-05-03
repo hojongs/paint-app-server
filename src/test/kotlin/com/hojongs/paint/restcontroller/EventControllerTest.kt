@@ -7,6 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest
 class EventControllerTest {
 
 	@Test
-	fun test() {
+	fun createOne() {
 	}
 }
