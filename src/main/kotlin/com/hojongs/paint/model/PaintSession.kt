@@ -11,5 +11,5 @@ data class PaintSession(
     val password: String,
 
     @Id
-    val id: String = "$name#${Random.nextLong(0, Long.MAX_VALUE)}"
+    val id: String = "$name-${Random.nextLong(0, 99999+1)}"
 )
