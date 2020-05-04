@@ -17,6 +17,7 @@ class PaintSessionService(
     fun findByIdOrNull(id: String): Mono<PaintSession?> =
         ReactorUtils
             .monoOnScheduler(ioScheduler) { paintSessionRepository.findByIdOrNull(id) }
+            .transform { ReactorUtils.withRetry(it) }
 
     fun createPaintSession(
         name: String,
@@ -28,4 +29,5 @@ class PaintSessionService(
 
                 paintSessionRepository.save(entity)
             }
+            .transform { ReactorUtils.withRetry(it) }
 }
