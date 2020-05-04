@@ -18,6 +18,7 @@ import org.springframework.util.CollectionUtils
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
+@Suppress("UNCHECKED_CAST")
 class PaintSessionControllerTest {
     @Autowired
     private lateinit var webTestClient: WebTestClient
@@ -30,14 +31,17 @@ class PaintSessionControllerTest {
             "password" to listOf("1235")
         )
     )
-    private lateinit var paintSessionId: String
+    private val paintSessionIds: MutableList<String> = mutableListOf()
 
-    companion object : PaintLogger()
+    companion object : PaintLogger() {
+        const val REPEAT_COUNT = 100
+    }
 
-    @Test
-    @RepeatedTest(100)
+    @RepeatedTest(REPEAT_COUNT)
     @Order(1)
-    fun createOne() {
+    fun createOne(repetitionInfo: RepetitionInfo) {
+        val idx: Int = repetitionInfo.currentRepetition - 1
+
         webTestClient
             .get()
             .uri { builder ->
@@ -53,17 +57,20 @@ class PaintSessionControllerTest {
             .consumeWith {
                 val paintSession = mapper.readValue(it.responseBody, PaintSession::class.java)
 
-                paintSessionId = paintSession.id
+                paintSessionIds.add(paintSession.id)
                 paintSession.name shouldBe sessionInfoMap["name"]!!.first()
                 paintSession.password shouldBe sessionInfoMap["password"]!!.first()
 
-                logger.info("createOne - $paintSession")
+                logger.info("createOne - [$idx] $paintSession")
             }
     }
 
-    @Test
+    @RepeatedTest(REPEAT_COUNT)
     @Order(2)
-    fun `findById - when exists then ok response`() {
+    fun `findById - when exists then ok response`(repetitionInfo: RepetitionInfo) {
+        val idx: Int = repetitionInfo.currentRepetition - 1
+        val paintSessionId: String = paintSessionIds[idx]
+
         webTestClient
             .get()
             .uri("/sessions/$paintSessionId")
@@ -78,7 +85,7 @@ class PaintSessionControllerTest {
                 paintSession.name shouldBe sessionInfoMap["name"]!!.first()
                 paintSession.password shouldBe sessionInfoMap["password"]!!.first()
 
-                logger.info("findById - $paintSession")
+                logger.info("findById - [$idx] element=$paintSession")
             }
     }
 
