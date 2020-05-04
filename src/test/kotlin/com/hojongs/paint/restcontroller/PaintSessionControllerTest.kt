@@ -19,7 +19,7 @@ import org.springframework.util.CollectionUtils
 @TestInstance(Lifecycle.PER_CLASS)
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @Suppress("UNCHECKED_CAST")
-class PaintSessionControllerTest {
+internal class PaintSessionControllerTest {
     companion object : PaintLogger() {
         const val REPEAT_COUNT = 100
     }
