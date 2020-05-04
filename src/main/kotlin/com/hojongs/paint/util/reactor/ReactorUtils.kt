@@ -1,5 +1,6 @@
 package com.hojongs.paint.util.reactor
 
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Scheduler
 import reactor.util.retry.Retry
@@ -16,4 +17,7 @@ object ReactorUtils {
 
     fun <T> withRetry(mono: Mono<T>): Mono<T> =
         mono.retryWhen(defaultRetrySpec)
+
+    fun <T> withRetry(flux: Flux<T>): Flux<T> =
+        flux.retryWhen(defaultRetrySpec)
 }

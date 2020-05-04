@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
+import java.util.*
+import kotlin.NoSuchElementException
 
 @RestController
 @RequestMapping("/sessions")
@@ -36,6 +38,13 @@ class PaintSessionController(
         paintSessionService
             .listPage(pageNumber)
             .collectList()
+            .transform { LoggerUtils.logError(logger, it) }
+
+    // todo user 체크
+    @GetMapping("/{id}/join")
+    private fun join(@PathVariable id: String, @RequestParam userId: String): Mono<PaintSession> =
+        paintSessionService
+            .joinPaintSession(id, UUID.fromString(userId))
             .transform { LoggerUtils.logError(logger, it) }
 
     @ExceptionHandler(NoSuchElementException::class)

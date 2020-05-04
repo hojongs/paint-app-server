@@ -12,6 +12,8 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Scheduler
 import reactor.core.scheduler.Schedulers
+import java.util.*
+import kotlin.NoSuchElementException
 
 @Service
 class PaintSessionService(
@@ -48,5 +50,14 @@ class PaintSessionService(
                     .get()
             }
             .subscribeOn(ioScheduler)
+            .transform { ReactorUtils.withRetry(it) }
             .switchIfEmpty(Mono.error(NoSuchElementException()))
+
+    fun joinPaintSession(
+        id: String,
+        userId: UUID
+    ): Mono<PaintSession> =
+        // todo user service
+        ReactorUtils
+            .monoOnScheduler(ioScheduler) { paintSessionRepository.findByIdOrNull(id) }
 }
