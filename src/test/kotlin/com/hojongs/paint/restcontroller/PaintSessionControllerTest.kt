@@ -2,10 +2,10 @@ package com.hojongs.paint.restcontroller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.hojongs.paint.model.PaintSession
+import com.hojongs.paint.util.logger.PaintLogger
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
@@ -22,10 +22,9 @@ class PaintSessionControllerTest {
     @Autowired
     private lateinit var webTestClient: WebTestClient
 
-    private val logger = LoggerFactory.getLogger(javaClass)
     private val mapper = jacksonObjectMapper()
 
-    private val urlParamMap = CollectionUtils.toMultiValueMap(
+    private val sessionInfoMap = CollectionUtils.toMultiValueMap(
         mapOf(
             "name" to listOf("test"),
             "password" to listOf("1235")
@@ -33,15 +32,18 @@ class PaintSessionControllerTest {
     )
     private lateinit var paintSessionId: String
 
+    companion object : PaintLogger()
+
     @Test
+    @RepeatedTest(100)
     @Order(1)
     fun createOne() {
         webTestClient
             .get()
-            .uri {
-                it
+            .uri { builder ->
+                builder
                     .path("/sessions/create")
-                    .queryParams(urlParamMap)
+                    .queryParams(sessionInfoMap)
                     .build()
             }
             .exchange()
@@ -52,8 +54,8 @@ class PaintSessionControllerTest {
                 val paintSession = mapper.readValue(it.responseBody, PaintSession::class.java)
 
                 paintSessionId = paintSession.id
-                paintSession.name shouldBe urlParamMap["name"]!!.first()
-                paintSession.password shouldBe urlParamMap["password"]!!.first()
+                paintSession.name shouldBe sessionInfoMap["name"]!!.first()
+                paintSession.password shouldBe sessionInfoMap["password"]!!.first()
 
                 logger.info("createOne - $paintSession")
             }
@@ -73,10 +75,39 @@ class PaintSessionControllerTest {
                 val paintSession = mapper.readValue(it.responseBody, PaintSession::class.java)
 
                 paintSession.id shouldBe paintSessionId
-                paintSession.name shouldBe urlParamMap["name"]!!.first()
-                paintSession.password shouldBe urlParamMap["password"]!!.first()
+                paintSession.name shouldBe sessionInfoMap["name"]!!.first()
+                paintSession.password shouldBe sessionInfoMap["password"]!!.first()
 
                 logger.info("findById - $paintSession")
+            }
+    }
+
+    @Test
+    @Order(3)
+    fun listAll() {
+        val urlParamMap = CollectionUtils.toMultiValueMap(
+            mapOf(
+                "pageNumber" to listOf("0")
+            )
+        )
+
+        webTestClient
+            .get()
+            .uri { builder ->
+                builder
+                    .path("/sessions")
+                    .queryParams(urlParamMap)
+                    .build()
+            }
+            .exchange()
+            .expectStatus().isOk
+            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+            .expectBody()
+            .consumeWith {
+                val paintSessions: List<PaintSession> =
+                    mapper.readValue(it.responseBody, List::class.java) as List<PaintSession>
+
+                logger.info("listAll - size=$paintSessions.size} elements=$paintSessions")
             }
     }
 
@@ -88,7 +119,6 @@ class PaintSessionControllerTest {
             .get()
             .uri("/sessions/$notExistsPaintSessionId")
             .exchange()
-            .expectStatus().isOk
-            .expectHeader().contentLength(0)
+            .expectStatus().isNoContent
     }
 }
