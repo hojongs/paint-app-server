@@ -18,6 +18,10 @@ class PaintSessionService(
     private val paintSessionRepository: PaintSessionRepository,
     private val ioScheduler: Scheduler = Schedulers.boundedElastic()
 ) {
+    companion object : PaintLogger() {
+        const val PAGE_SIZE = 100
+    }
+
     fun findByIdOrNull(id: String): Mono<PaintSession> =
         ReactorUtils
             .monoOnScheduler(ioScheduler) { paintSessionRepository.findByIdOrNull(id) }
@@ -45,8 +49,4 @@ class PaintSessionService(
             }
             .subscribeOn(ioScheduler)
             .switchIfEmpty(Mono.error(NoSuchElementException()))
-
-    companion object : PaintLogger() {
-        const val PAGE_SIZE = 100
-    }
 }

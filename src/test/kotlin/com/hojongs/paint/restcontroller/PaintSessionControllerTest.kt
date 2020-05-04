@@ -20,6 +20,10 @@ import org.springframework.util.CollectionUtils
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @Suppress("UNCHECKED_CAST")
 class PaintSessionControllerTest {
+    companion object : PaintLogger() {
+        const val REPEAT_COUNT = 100
+    }
+
     @Autowired
     private lateinit var webTestClient: WebTestClient
 
@@ -32,10 +36,6 @@ class PaintSessionControllerTest {
         )
     )
     private val paintSessionIds: MutableList<String> = mutableListOf()
-
-    companion object : PaintLogger() {
-        const val REPEAT_COUNT = 100
-    }
 
     @RepeatedTest(REPEAT_COUNT)
     @Order(1)
