@@ -3,7 +3,8 @@ package com.hojongs.paint.restcontroller
 import com.hojongs.paint.model.PaintSession
 import com.hojongs.paint.service.PaintSessionService
 import com.hojongs.paint.util.logger.LoggerUtils
-import com.hojongs.paint.util.logger.PaintLogger
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -16,7 +17,8 @@ import kotlin.NoSuchElementException
 class PaintSessionController(
     private val paintSessionService: PaintSessionService
 ) {
-    companion object : PaintLogger()
+
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     // todo user 체크 & session에 대한 권한 체크
     @GetMapping("/{id}")

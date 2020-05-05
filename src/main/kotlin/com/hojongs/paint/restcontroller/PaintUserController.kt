@@ -1,7 +1,7 @@
 package com.hojongs.paint.restcontroller
 
 import com.hojongs.paint.service.PaintUserService
-import com.hojongs.paint.util.logger.PaintLogger
+import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.*
 class PaintUserController(
     private val paintUserService: PaintUserService
 ) {
-    companion object : PaintLogger()
+    private val logger = LoggerFactory.getLogger(this::class.java)
 }

@@ -2,10 +2,11 @@ package com.hojongs.paint.restcontroller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.hojongs.paint.model.PaintSession
-import com.hojongs.paint.util.logger.PaintLogger
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient
 import org.springframework.boot.test.context.SpringBootTest
@@ -20,9 +21,11 @@ import org.springframework.util.CollectionUtils
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 @Suppress("UNCHECKED_CAST")
 internal class PaintSessionControllerTest {
-    companion object : PaintLogger() {
+    companion object {
         const val REPEAT_COUNT = 100
     }
+
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Autowired
     private lateinit var webTestClient: WebTestClient
