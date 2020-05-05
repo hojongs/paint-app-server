@@ -16,7 +16,7 @@ import org.springframework.security.provisioning.InMemoryUserDetailsManager
 
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig : WebSecurityConfigurerAdapter() {
+class WebAuthenticationConfig : WebSecurityConfigurerAdapter() {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
