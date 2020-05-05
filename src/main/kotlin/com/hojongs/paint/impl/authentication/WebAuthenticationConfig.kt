@@ -7,14 +7,14 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
-import org.springframework.security.provisioning.InMemoryUserDetailsManager
 
 @EnableWebSecurity
-class WebAuthenticationConfig : WebSecurityConfigurerAdapter() {
+class WebAuthenticationConfig(
+    private val userDetailsService: UserDetailsService
+) : WebSecurityConfigurerAdapter() {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
@@ -33,20 +33,9 @@ class WebAuthenticationConfig : WebSecurityConfigurerAdapter() {
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(userDetailsService())
+        auth.userDetailsService(userDetailsService)
             .passwordEncoder(passwordEncoder())
     }
 
-    @Bean
-    override fun userDetailsService(): UserDetailsService =
-        InMemoryUserDetailsManager(
-            User.builder()
-                .username("hojong")
-                .password(passwordEncoder().encode("password"))
-                .roles("USER").build(),
-            User.builder()
-                .username("admin")
-                .password(passwordEncoder().encode("password"))
-                .roles("ADMIN").build()
-        )
+    override fun userDetailsService(): UserDetailsService = userDetailsService
 }
