@@ -17,5 +17,5 @@ class HomeController(
 
     @GetMapping
     private fun home(authentication: Authentication): Mono<String> =
-        ReactorUtils.mono { "Hello, ${authentication.name} " + homeService.getMsg() }
+        ReactorUtils.mono { homeService.getMsg(authentication.name) }
 }

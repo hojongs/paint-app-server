@@ -14,7 +14,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 
-@Configuration
 @EnableWebSecurity
 class WebAuthenticationConfig : WebSecurityConfigurerAdapter() {
 
@@ -24,15 +23,14 @@ class WebAuthenticationConfig : WebSecurityConfigurerAdapter() {
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     override fun configure(http: HttpSecurity) {
-        http.authorizeRequests()
-//            .antMatchers("/", "/home").permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .formLogin()
-            .permitAll()
-            .and()
-            .logout()
-            .permitAll()
+        http
+            .authorizeRequests { registry ->
+                registry
+                    .antMatchers("/").authenticated()
+                    .anyRequest().permitAll()
+            }
+            .formLogin { config -> config.permitAll() }
+            .logout { config -> config.permitAll() }
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
@@ -46,7 +44,10 @@ class WebAuthenticationConfig : WebSecurityConfigurerAdapter() {
             User.builder()
                 .username("hojong")
                 .password(passwordEncoder().encode("password"))
-                .roles("USER")
-                .build()
+                .roles("USER").build(),
+            User.builder()
+                .username("admin")
+                .password(passwordEncoder().encode("password"))
+                .roles("ADMIN").build()
         )
 }

@@ -11,5 +11,5 @@ class HomeService {
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @PreAuthorize("hasRole('ADMIN')")
-    fun getMsg() = "hello"
+    fun getMsg(name: String) = "hello, $name"
 }
