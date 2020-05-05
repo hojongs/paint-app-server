@@ -8,21 +8,20 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.provisioning.InMemoryUserDetailsManager
 
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig(
-    private val userDetailsService: UserDetailsService
-) : WebSecurityConfigurerAdapter() {
+class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder =
-        BCryptPasswordEncoder()
+    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
@@ -37,17 +36,17 @@ class WebSecurityConfig(
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(userDetailsService)
+        auth.userDetailsService(userDetailsService())
             .passwordEncoder(passwordEncoder())
     }
 
-//    @Bean
-//    override fun userDetailsService(): UserDetailsService {
-//        val user: UserDetails = User.withDefaultPasswordEncoder() // todo password encoder
-//            .username("hojong-user")
-//            .password("password")
-//            .roles("USER")
-//            .build()
-//        return UserDetailManager(user)
-//    }
+    @Bean
+    override fun userDetailsService(): UserDetailsService =
+        InMemoryUserDetailsManager(
+            User.builder()
+                .username("hojong")
+                .password(passwordEncoder().encode("password"))
+                .roles("USER")
+                .build()
+        )
 }
