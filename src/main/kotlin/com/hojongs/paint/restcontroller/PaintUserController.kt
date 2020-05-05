@@ -1,6 +1,6 @@
 package com.hojongs.paint.restcontroller
 
-import com.hojongs.paint.service.PaintUserService
+import com.hojongs.paint.impl.user.PaintUserService
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
 

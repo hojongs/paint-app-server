@@ -1,4 +1,4 @@
-package com.hojongs.paint.configuration
+package com.hojongs.paint.impl.authorization
 
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 

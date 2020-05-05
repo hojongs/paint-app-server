@@ -1,4 +1,4 @@
-package com.hojongs.paint.impl
+package com.hojongs.paint.impl.event
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.hojongs.paint.model.PaintEvent

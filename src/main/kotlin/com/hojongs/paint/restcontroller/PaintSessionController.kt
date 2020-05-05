@@ -1,7 +1,7 @@
 package com.hojongs.paint.restcontroller
 
 import com.hojongs.paint.model.PaintSession
-import com.hojongs.paint.service.PaintSessionService
+import com.hojongs.paint.impl.session.PaintSessionService
 import com.hojongs.paint.util.logger.LoggerUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

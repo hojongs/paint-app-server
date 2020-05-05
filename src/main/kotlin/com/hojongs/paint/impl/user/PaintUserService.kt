@@ -1,4 +1,4 @@
-package com.hojongs.paint.service
+package com.hojongs.paint.impl.user
 
 import com.hojongs.paint.repository.PaintUserRepository
 import org.slf4j.Logger

@@ -1,4 +1,4 @@
-package com.hojongs.paint.service
+package com.hojongs.paint.impl.session
 
 import com.hojongs.paint.model.PaintSession
 import com.hojongs.paint.repository.PaintSessionRepository
