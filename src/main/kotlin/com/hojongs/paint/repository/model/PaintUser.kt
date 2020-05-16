@@ -12,10 +12,6 @@ data class PaintUser(
     private val email: String,
     private val displayName: String,
     private val password: String,
-    private val authorities: List<GrantedAuthority> =
-        AuthorityUtils.createAuthorityList(
-            "ROLE_USER"
-        ),
     private val isEnabled: Boolean = true
 ) : UserDetails {
 
@@ -23,9 +19,12 @@ data class PaintUser(
 
     override fun getPassword(): String = password
 
-    override fun getAuthorities(): Collection<GrantedAuthority> = authorities
-
     override fun isEnabled(): Boolean = isEnabled
+
+    override fun getAuthorities(): Collection<GrantedAuthority> =
+        AuthorityUtils.createAuthorityList(
+            "ROLE_USER"
+        )
 
     override fun isCredentialsNonExpired(): Boolean = true
 
