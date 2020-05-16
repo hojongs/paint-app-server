@@ -1,7 +1,11 @@
 package com.hojongs.paint.configuration
 
+import com.hojongs.paint.repository.PaintUserRepository
+import com.hojongs.paint.repository.model.PaintUser
+import com.hojongs.paint.service.PaintUserService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -14,14 +18,15 @@ import org.springframework.security.crypto.password.PasswordEncoder
 
 @Configuration
 @EnableWebSecurity
-class WebAuthenticationConfig(
-    private val userDetailsService: UserDetailsService
-) : WebSecurityConfigurerAdapter() {
+class WebAuthenticationConfig : WebSecurityConfigurerAdapter() {
+
+    @Autowired
+    private lateinit var paintUserRepository: PaintUserRepository
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @Bean
-    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
+    protected fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
     override fun configure(http: HttpSecurity) {
         http
@@ -35,9 +40,18 @@ class WebAuthenticationConfig(
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(userDetailsService)
+        paintUserRepository
+            .save(
+                PaintUser(
+                    "user@example.co",
+                    "user",
+                    passwordEncoder().encode("pw")
+                )
+            )
+
+        auth.userDetailsService(userDetailsService())
             .passwordEncoder(passwordEncoder())
     }
 
-    override fun userDetailsService(): UserDetailsService = userDetailsService
+    override fun userDetailsService(): UserDetailsService = PaintUserService(paintUserRepository)
 }

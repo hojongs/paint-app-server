@@ -7,19 +7,15 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import reactor.core.scheduler.Scheduler
-import reactor.core.scheduler.Schedulers
-import java.util.*
 
 class PaintUserService(
-    private val paintUserRepository: PaintUserRepository,
-    private val ioScheduler: Scheduler = Schedulers.boundedElastic()
+    private val paintUserRepository: PaintUserRepository
 ) : UserDetailsService {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     override fun loadUserByUsername(username: String): UserDetails =
         paintUserRepository
-            .findByIdOrNull(UUID.fromString(username))
+            .findByIdOrNull(username)
             ?: throw UsernameNotFoundException(username)
 }
