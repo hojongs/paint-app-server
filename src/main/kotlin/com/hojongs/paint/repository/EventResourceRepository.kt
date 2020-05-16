@@ -11,8 +11,6 @@ import java.nio.ByteBuffer
 
 class EventResourceRepository(
     private val resourceLoader: ResourceLoader,
-
-    @Value("\${ext.resource-location-prefix}")
     private val locationPrefix: String
 ) : ResourceRepository<PaintEvent> {
 

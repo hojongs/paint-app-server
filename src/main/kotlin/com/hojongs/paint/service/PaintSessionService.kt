@@ -2,21 +2,15 @@ package com.hojongs.paint.service
 
 import com.hojongs.paint.repository.model.PaintSession
 import com.hojongs.paint.repository.PaintSessionRepository
-import com.hojongs.paint.util.reactor.ReactorUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
-import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
-import reactor.core.scheduler.Scheduler
-import reactor.core.scheduler.Schedulers
 import java.util.*
 import kotlin.NoSuchElementException
 
 class PaintSessionService(
-    private val paintSessionRepository: PaintSessionRepository,
-    private val ioScheduler: Scheduler = Schedulers.boundedElastic()
+    private val paintSessionRepository: PaintSessionRepository
 ) {
     companion object {
         const val PAGE_SIZE = 100
@@ -24,40 +18,33 @@ class PaintSessionService(
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    fun findByIdOrNull(id: String): Mono<PaintSession> =
-        ReactorUtils
-            .monoOnScheduler(ioScheduler) { paintSessionRepository.findByIdOrNull(id) }
-            .transform { ReactorUtils.withRetry(it) }
-            .switchIfEmpty(Mono.error(NoSuchElementException()))
+    fun findById(id: String): PaintSession {
+        return paintSessionRepository
+            .findByIdOrNull(id)
+            ?: throw NoSuchElementException()
+    }
 
     fun createPaintSession(
         name: String,
         password: String
-    ): Mono<PaintSession> =
-        ReactorUtils
-            .monoOnScheduler(ioScheduler) {
-                val entity = PaintSession(name, password)
+    ): PaintSession {
+        val entity = PaintSession(name, password)
 
-                paintSessionRepository.save(entity)
-            }
-            .transform { ReactorUtils.withRetry(it) }
+        return paintSessionRepository.save(entity)
+    }
 
-    fun listPage(pageNumber: Int): Flux<PaintSession> =
-        Flux
-            .fromStream {
-                paintSessionRepository
-                    .findAll(PageRequest.of(pageNumber, PAGE_SIZE))
-                    .get()
-            }
-            .subscribeOn(ioScheduler)
-            .transform { ReactorUtils.withRetry(it) }
-            .switchIfEmpty(Mono.error(NoSuchElementException()))
+    fun listSessionPage(pageNumber: Int): List<PaintSession> {
+        return paintSessionRepository
+            .findAll(PageRequest.of(pageNumber, PAGE_SIZE))
+            .content
+    }
 
     fun joinPaintSession(
         id: String,
         userId: UUID
-    ): Mono<PaintSession> =
+    ): PaintSession {
         // todo user service
-        ReactorUtils
-            .monoOnScheduler(ioScheduler) { paintSessionRepository.findByIdOrNull(id) }
+        return paintSessionRepository.findByIdOrNull(id)
+            ?: throw NoSuchElementException()
+    }
 }

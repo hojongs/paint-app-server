@@ -2,13 +2,11 @@ package com.hojongs.paint.restcontroller
 
 import com.hojongs.paint.repository.model.PaintSession
 import com.hojongs.paint.service.PaintSessionService
-import com.hojongs.paint.util.logger.LoggerUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Mono
 import java.util.*
 import kotlin.NoSuchElementException
 
@@ -21,32 +19,25 @@ class PaintSessionController(
 
     // todo user 체크 & session에 대한 권한 체크
     @GetMapping("/{id}")
-    private fun findById(@PathVariable id: String): Mono<PaintSession> =
-        paintSessionService
-            .findByIdOrNull(id)
-            .transform { LoggerUtils.logError(logger, it) }
+    private fun findById(@PathVariable id: String): PaintSession {
+        return paintSessionService.findById(id)
+    }
 
     // todo user 체크
     @GetMapping("/create")
-    private fun createOne(@RequestParam name: String, @RequestParam password: String): Mono<PaintSession> =
-        paintSessionService
-            .createPaintSession(name, password)
-            .transform { LoggerUtils.logError(logger, it) }
+    private fun createOne(@RequestParam name: String, @RequestParam password: String): PaintSession {
+        return paintSessionService.createPaintSession(name, password)
+    }
 
     // todo user 체크
     @GetMapping
-    private fun listPage(@RequestParam(defaultValue = "0") pageNumber: Int): Mono<List<PaintSession>> =
-        paintSessionService
-            .listPage(pageNumber)
-            .collectList()
-            .transform { LoggerUtils.logError(logger, it) }
+    private fun listPage(@RequestParam(defaultValue = "0") pageNumber: Int): List<PaintSession> =
+        paintSessionService.listSessionPage(pageNumber)
 
     // todo user 체크
     @GetMapping("/{id}/join")
-    private fun join(@PathVariable id: String, @RequestParam userId: String): Mono<PaintSession> =
-        paintSessionService
-            .joinPaintSession(id, UUID.fromString(userId))
-            .transform { LoggerUtils.logError(logger, it) }
+    private fun join(@PathVariable id: String, @RequestParam userId: String): PaintSession =
+        paintSessionService.joinPaintSession(id, UUID.fromString(userId))
 
     @ExceptionHandler(NoSuchElementException::class)
     private fun exceptionHandler(err: NoSuchElementException): ResponseEntity<String> =

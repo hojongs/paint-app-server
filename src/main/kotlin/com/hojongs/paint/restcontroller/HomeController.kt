@@ -1,13 +1,12 @@
 package com.hojongs.paint.restcontroller
 
 import com.hojongs.paint.service.HomeService
-import com.hojongs.paint.util.reactor.ReactorUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Mono
 
+@RequestMapping
 class HomeController(
     private val homeService: HomeService
 ) {
@@ -15,6 +14,6 @@ class HomeController(
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @GetMapping
-    private fun home(authentication: Authentication): Mono<String> =
-        ReactorUtils.mono { homeService.getMsg(authentication.name) }
+    private fun home(authentication: Authentication): String =
+        homeService.getMsg(authentication.name)
 }

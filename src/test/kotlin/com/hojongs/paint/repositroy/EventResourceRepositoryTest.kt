@@ -1,4 +1,4 @@
-package com.hojongs.paint.impl
+package com.hojongs.paint.repositroy
 
 import com.hojongs.paint.repository.model.PaintEvent
 import com.hojongs.paint.repository.ResourceRepository
