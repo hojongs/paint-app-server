@@ -1,17 +1,14 @@
-package com.hojongs.paint.impl.event
+package com.hojongs.paint.repository
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.hojongs.paint.model.PaintEvent
-import com.hojongs.paint.repository.ResourceRepository
+import com.hojongs.paint.repository.model.PaintEvent
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.core.io.WritableResource
-import org.springframework.stereotype.Repository
 import java.nio.ByteBuffer
 
-@Repository
 class EventResourceRepository(
     private val resourceLoader: ResourceLoader,
 

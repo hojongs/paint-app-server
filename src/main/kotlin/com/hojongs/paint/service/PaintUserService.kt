@@ -1,4 +1,4 @@
-package com.hojongs.paint.impl.user
+package com.hojongs.paint.service
 
 import com.hojongs.paint.repository.PaintUserRepository
 import org.slf4j.Logger
@@ -7,12 +7,10 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
-import org.springframework.stereotype.Service
 import reactor.core.scheduler.Scheduler
 import reactor.core.scheduler.Schedulers
 import java.util.*
 
-@Service
 class PaintUserService(
     private val paintUserRepository: PaintUserRepository,
     private val ioScheduler: Scheduler = Schedulers.boundedElastic()

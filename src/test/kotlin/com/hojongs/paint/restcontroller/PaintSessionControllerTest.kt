@@ -1,7 +1,7 @@
 package com.hojongs.paint.restcontroller
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.hojongs.paint.model.PaintSession
+import com.hojongs.paint.repository.model.PaintSession
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.TestInstance.Lifecycle

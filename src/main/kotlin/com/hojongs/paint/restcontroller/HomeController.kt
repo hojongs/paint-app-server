@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 import reactor.core.publisher.Mono
 
-@RestController
 class HomeController(
     private val homeService: HomeService
 ) {

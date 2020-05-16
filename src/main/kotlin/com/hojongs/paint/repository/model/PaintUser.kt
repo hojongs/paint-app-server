@@ -1,4 +1,4 @@
-package com.hojongs.paint.model
+package com.hojongs.paint.repository.model
 
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.AuthorityUtils

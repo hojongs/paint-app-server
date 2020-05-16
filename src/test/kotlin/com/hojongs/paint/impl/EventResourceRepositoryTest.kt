@@ -1,6 +1,6 @@
 package com.hojongs.paint.impl
 
-import com.hojongs.paint.model.PaintEvent
+import com.hojongs.paint.repository.model.PaintEvent
 import com.hojongs.paint.repository.ResourceRepository
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory

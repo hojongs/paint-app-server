@@ -1,13 +1,12 @@
-package com.hojongs.paint.impl.session
+package com.hojongs.paint.service
 
-import com.hojongs.paint.model.PaintSession
+import com.hojongs.paint.repository.model.PaintSession
 import com.hojongs.paint.repository.PaintSessionRepository
 import com.hojongs.paint.util.reactor.ReactorUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Scheduler
@@ -15,7 +14,6 @@ import reactor.core.scheduler.Schedulers
 import java.util.*
 import kotlin.NoSuchElementException
 
-@Service
 class PaintSessionService(
     private val paintSessionRepository: PaintSessionRepository,
     private val ioScheduler: Scheduler = Schedulers.boundedElastic()

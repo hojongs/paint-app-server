@@ -1,4 +1,4 @@
-package com.hojongs.paint.model
+package com.hojongs.paint.repository.model
 
 import javax.persistence.Entity
 import javax.persistence.Id
