@@ -7,10 +7,13 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.core.io.WritableResource
+import org.springframework.stereotype.Repository
 import java.nio.ByteBuffer
 
+@Repository
 class EventResourceRepository(
     private val resourceLoader: ResourceLoader,
+    @Value("\${ext.resource-location-prefix}")
     private val locationPrefix: String
 ) : ResourceRepository<PaintEvent> {
 

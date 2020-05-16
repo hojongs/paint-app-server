@@ -7,7 +7,9 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.stereotype.Service
 
+@Service
 class PaintUserService(
     private val paintUserRepository: PaintUserRepository
 ) : UserDetailsService {

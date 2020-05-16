@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 import kotlin.NoSuchElementException
 
+@RestController
 @RequestMapping("/sessions")
 class PaintSessionController(
     private val paintSessionService: PaintSessionService
