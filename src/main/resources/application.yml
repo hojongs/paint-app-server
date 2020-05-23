@@ -18,4 +18,5 @@ logging:
       hojongs: DEBUG
 
 ext:
-  resource-location-prefix: s3://temp-bucket-22/
+  s3:
+    event-bucket-name: temp-bucket-22

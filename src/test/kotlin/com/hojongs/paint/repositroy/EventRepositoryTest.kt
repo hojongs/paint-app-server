@@ -8,19 +8,19 @@ import org.junit.jupiter.api.assertThrows
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import kotlin.random.Random
 
 @SpringBootTest(
-    "ext.resource-location-prefix=file:",
     classes = [App::class],
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
-internal class EventResourceRepositoryTest {
+internal class EventRepositoryTest {
 
     private val logger = LoggerFactory.getLogger(javaClass)
 
     @Autowired
     private lateinit var eventResourceRepository: ResourceRepository<PaintEvent>
-    private val location = "temp.txt"
+    private val location = "temp-${Random.nextLong(0, Long.MAX_VALUE)}.txt"
 
     @Test
     fun `save - success`() {
