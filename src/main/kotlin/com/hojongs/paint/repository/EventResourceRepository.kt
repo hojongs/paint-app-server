@@ -4,11 +4,14 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.hojongs.paint.repository.model.PaintEvent
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.core.io.FileSystemResource
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.core.io.WritableResource
 import org.springframework.stereotype.Repository
 import java.nio.ByteBuffer
+import java.nio.channels.FileChannel
+import java.nio.file.Paths
 
 @Repository
 class EventResourceRepository(
@@ -22,31 +25,44 @@ class EventResourceRepository(
 
     override fun findByLocation(
         location: String
-    ): PaintEvent = run {
-        val resource: Resource = resourceLoader.getResource("$locationPrefix/$location")
+    ): PaintEvent =
+        resourceLoader.getResource("$locationPrefix$location")
+            .let { resource ->
+                if (!resource.exists()) throw NoSuchElementException("Resource")
+                else resource.asByteArray()
+            }
+            .let { bytes -> mapper.readValue(bytes, PaintEvent::class.java) }
 
-        resource.toEntity()
+    override fun save(location: String, resource: PaintEvent): PaintEvent = run {
+        "$locationPrefix$location"
+            .also { location -> logger.debug("location=${location}") }
+            .let { location -> resourceLoader.getResource(location) }
+            .let { resource ->
+                when (resource) {
+                    is FileSystemResource ->
+                        if (resource.exists())
+                            resource.writableChannel()
+                        else
+                            FileChannel.open(
+                                Paths.get(location)
+                            )
+                    is WritableResource ->
+                        resource.writableChannel()
+                    else ->
+                        throw NotImplementedError("${resource::class}")
+                }
+            }
+            .let { writableByteChannel ->
+                writableByteChannel.write(
+                    resource.toBytes()
+                        .let { bytes -> ByteBuffer.wrap(bytes) }
+                )
+                writableByteChannel.close()
+            }
+            .let { resource }
     }
-
-    override fun save(resource: PaintEvent): Unit = run {
-        val writableChannel = resource.getLocation()
-            .let { location -> resourceLoader.getResource("$locationPrefix/$location") as WritableResource }.writableChannel()
-
-        resource.toBytes()
-            .let { bytes -> ByteBuffer.wrap(bytes) }
-            .let { byteBuffer -> writableChannel.write(byteBuffer) }
-            .let { writableChannel.close() }
-    }
-
-    private fun PaintEvent.getLocation(): String = this.hashCode().toString()
 
     private fun PaintEvent.toBytes(): ByteArray = mapper.writeValueAsBytes(this)
-
-    private fun Resource.toEntity(): PaintEvent = run {
-        val bytes = this.asByteArray()
-
-        mapper.readValue(bytes, PaintEvent::class.java)
-    }
 
     private fun Resource.asByteArray(): ByteArray = run {
         val size = this.contentLength()

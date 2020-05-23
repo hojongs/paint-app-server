@@ -4,11 +4,13 @@ import com.hojongs.paint.app.App
 import com.hojongs.paint.repository.ResourceRepository
 import com.hojongs.paint.repository.model.PaintEvent
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 
 @SpringBootTest(
+    "ext.resource-location-prefix=file:",
     classes = [App::class],
     webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
 )
@@ -18,20 +20,23 @@ internal class EventResourceRepositoryTest {
 
     @Autowired
     private lateinit var eventResourceRepository: ResourceRepository<PaintEvent>
+    private val location = "temp.txt"
 
     @Test
-    fun save() {
+    fun `save - success`() {
         val paintEvent = PaintEvent(
             "release"
         )
 
-        eventResourceRepository.save(paintEvent)
+        eventResourceRepository.save(location, paintEvent)
     }
 
     @Test
-    fun findByLocation() {
-        val paintEvent = eventResourceRepository.findByLocation("1090594823")
+    fun `findByLocation - When Not Exists Then NoSuchElementException error`() {
+        assertThrows<NoSuchElementException> {
+            val paintEvent = eventResourceRepository.findByLocation(location)
 
-        logger.info("paintEvent: $paintEvent")
+            logger.debug("paintEvent: $paintEvent")
+        }
     }
 }

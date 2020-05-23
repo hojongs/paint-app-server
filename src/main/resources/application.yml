@@ -1,4 +1,4 @@
-debug: true
+debug: false
 
 server:
   port: 8080
@@ -12,5 +12,10 @@ cloud:
     stack:
       auto: false
 
+logging:
+  level:
+    com:
+      hojongs: DEBUG
+
 ext:
-  resource-location-prefix: s3://temp-bucket-22
+  resource-location-prefix: s3://temp-bucket-22/
