@@ -4,17 +4,17 @@ import javax.persistence.Entity
 import javax.persistence.Id
 
 @Entity(name = "paint_users")
-data class PaintUser(
+class PaintUser(
     @Id
     private val email: String,
-    private val displayName: String,
     private val password: String,
+    private val displayName: String = email,
     private val isEnabled: Boolean = true
-) {
+) : User {
 
-    fun getUsername(): String = email
+    override fun getUserId(): String = email
 
-    fun getPassword(): String = password
+    override fun getPassword(): String = password
 
     fun isEnabled(): Boolean = isEnabled
 
