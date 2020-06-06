@@ -2,32 +2,31 @@ package com.hojongs.paint.service
 
 import com.hojongs.paint.repository.PaintUserRepository
 import com.hojongs.paint.repository.model.PaintUser
-import com.hojongs.paint.repository.model.User
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
 class PaintUserService(
     private val paintUserRepository: PaintUserRepository
-) : UserService {
+) {
 
-    override fun signUp(userId: String, password: String): User =
-        paintUserRepository.existsById(userId)
-            .let { isUserExists ->
-                if (isUserExists)
-                    throw Exception(isUserExists.toString())
-                else
-                    PaintUser(
-                        email = userId,
-                        displayName = userId,
-                        password = password
-                    )
-            }
-            .let { paintUser -> paintUserRepository.save(paintUser) }
+    fun signUp(userId: String, password: String, displayName: String): PaintUser {
+        if (paintUserRepository.existsById(userId))
+            throw Exception("user already exists")
 
-    override fun signIn(userId: String, password: String): User =
+        val paintUser = PaintUser(
+            email = userId,
+            password = password,
+            displayName = displayName
+        )
+        val savedUser = paintUserRepository.save(paintUser)
+
+        return savedUser
+    }
+
+    fun signIn(userId: String, password: String): PaintUser =
         paintUserRepository
             .findByIdOrNull(userId)
-            ?.takeIf { foundUser: User -> foundUser.getPassword() != password }
+            ?.takeIf { foundUser: PaintUser -> foundUser.password != password }
             ?: throw NoSuchElementException("PaintUser")
 }

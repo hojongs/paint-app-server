@@ -6,19 +6,11 @@ import javax.persistence.Id
 @Entity(name = "paint_users")
 class PaintUser(
     @Id
-    val email: String,
-    override val password: String,
+    val email: String = "",
+    val password: String = "",
     val displayName: String = email,
     val isEnabled: Boolean = true
-) : User {
+) {
 
-    override val userId: String = email
-
-    fun getAuthorities(): List<String> = listOf("ROLE_USER")
-
-    fun isCredentialsNonExpired(): Boolean = true
-
-    fun isAccountNonExpired(): Boolean = true
-
-    fun isAccountNonLocked(): Boolean = true
+    override fun toString(): String = "${this::class}(email=$email,password=$password,displayName=$displayName,isEnabled=$isEnabled)"
 }
