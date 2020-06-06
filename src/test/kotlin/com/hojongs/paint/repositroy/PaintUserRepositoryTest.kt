@@ -38,7 +38,7 @@ class PaintUserRepositoryTest {
 
         val foundPaintUser = paintUserRepository.findByIdOrNull("ema")!!
 
-        println(foundPaintUser.getUserId())
+        println(foundPaintUser.userId)
         println(foundPaintUser.displayName)
     }
 }

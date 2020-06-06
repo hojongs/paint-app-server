@@ -7,14 +7,12 @@ import javax.persistence.Id
 class PaintUser(
     @Id
     val email: String,
-    private val password: String,
+    override val password: String,
     val displayName: String = email,
     val isEnabled: Boolean = true
 ) : User {
 
-    override fun getUserId(): String = email
-
-    override fun getPassword(): String = password
+    override val userId: String = email
 
     fun getAuthorities(): List<String> = listOf("ROLE_USER")
 
