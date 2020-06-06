@@ -17,6 +17,12 @@ logging:
     com:
       hojongs: DEBUG
 
+spring:
+  datasource:
+    url: jdbc:h2:file:./tmp/db
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
 ext:
   s3:
     event-bucket-name: temp-bucket-22
