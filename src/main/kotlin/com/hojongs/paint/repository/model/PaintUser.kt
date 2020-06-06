@@ -6,17 +6,15 @@ import javax.persistence.Id
 @Entity(name = "paint_users")
 class PaintUser(
     @Id
-    private val email: String,
+    val email: String,
     private val password: String,
-    private val displayName: String = email,
-    private val isEnabled: Boolean = true
+    val displayName: String = email,
+    val isEnabled: Boolean = true
 ) : User {
 
     override fun getUserId(): String = email
 
     override fun getPassword(): String = password
-
-    fun isEnabled(): Boolean = isEnabled
 
     fun getAuthorities(): List<String> = listOf("ROLE_USER")
 
