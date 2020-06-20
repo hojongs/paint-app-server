@@ -12,5 +12,26 @@ open class PaintUser(
     val id: UUID = UUID.randomUUID(),
     val email: String,
     val password: String,
+    joinedSessionId: UUID? = null,
     val createdAt: LocalDateTime = LocalDateTime.now(UTC)
-): BaseEntity()
+) : BaseEntity(), Cloneable {
+    var joinedSessionId = joinedSessionId
+        private set
+
+    fun joinSession(sessionId: UUID): PaintUser {
+        joinedSessionId = sessionId
+
+        return this
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other is PaintUser && other.id == id)
+            return true
+
+        return super.equals(other)
+    }
+
+    public override fun clone(): PaintUser {
+        return super.clone() as PaintUser
+    }
+}

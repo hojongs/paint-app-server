@@ -1,7 +1,9 @@
 package com.hojongs.paint.service
 
 import com.hojongs.paint.exception.AlreadyExistsException
+import com.hojongs.paint.repository.PaintSessionRepository
 import com.hojongs.paint.repository.PaintUserRepository
+import com.hojongs.paint.repository.model.PaintSession
 import com.hojongs.paint.repository.model.PaintUser
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.given
@@ -18,7 +20,8 @@ import java.util.UUID
 
 internal class PaintUserServiceTest {
     private val paintUserRepository = mock<PaintUserRepository>()
-    private val paintUserService = spy(PaintUserService(paintUserRepository))
+    private val paintSessionRepository = mock<PaintSessionRepository>()
+    private val paintUserService = spy(PaintUserService(paintUserRepository, paintSessionRepository))
 
     @Test
     fun `given exists email when createUser() then AlreadyExistsException(email) error`() {
@@ -157,6 +160,29 @@ internal class PaintUserServiceTest {
         // when
         StepVerifier.create(paintUserService.deleteUser(id))
             // then
+            .verifyComplete()
+    }
+
+    @Test
+    fun `given exists user, session when joinSession() then return joined user`() {
+        // given
+        val foundUser = PaintUser(id = UUID.randomUUID(), email = "ema", password = "pas")
+        val foundSession = PaintSession(userId = UUID.randomUUID(), name = "sess", password = "sessPas")
+        val joinedUser = foundUser.clone().joinSession(foundSession.id)
+        given(paintUserRepository.findById(foundUser.id))
+            .will { foundUser.toMono() }
+        given(paintSessionRepository.findByNameAndPassword(foundSession.name, foundSession.password))
+            .will { foundSession.toMono() }
+        given(paintUserRepository.save(joinedUser))
+            .will { joinedUser.toMono() }
+
+        // when
+        StepVerifier.create(paintUserService.joinSession(foundUser.id, foundSession.name, foundSession.password))
+            // then
+            .assertNext {
+                it shouldBe joinedUser
+                it.joinedSessionId shouldBe foundSession.id
+            }
             .verifyComplete()
     }
 }

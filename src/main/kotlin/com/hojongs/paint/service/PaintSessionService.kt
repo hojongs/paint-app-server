@@ -3,6 +3,8 @@ package com.hojongs.paint.service
 import com.hojongs.paint.exception.AlreadyExistsException
 import com.hojongs.paint.repository.model.PaintSession
 import com.hojongs.paint.repository.PaintSessionRepository
+import com.hojongs.paint.repository.PaintUserRepository
+import com.hojongs.paint.repository.model.PaintUser
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
@@ -33,13 +35,4 @@ class PaintSessionService(
     fun listSession(): Flux<PaintSession> {
         return paintSessionRepository.findAll()
     }
-
-//    fun joinPaintSession(
-//        id: String,
-//        userId: UUID
-//    ): PaintSession {
-//        // todo user service
-//        return paintSessionRepository.findByIdOrNull(id)
-//            ?: throw NoSuchElementException()
-//    }
 }
