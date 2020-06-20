@@ -8,5 +8,6 @@ import java.util.UUID
 
 @Configuration
 interface PaintUserRepository : ReactiveMongoRepository<PaintUser, UUID> {
+    fun findByEmail(email: String): Mono<PaintUser>
     fun findByEmailAndPassword(email: String, password: String): Mono<PaintUser>
 }

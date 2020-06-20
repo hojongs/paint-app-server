@@ -1,5 +1,3 @@
 package com.hojongs.paint.exception
 
-import java.util.UUID
-
-class AlreadyExistsException(id: UUID) : Exception("already exists id=$id")
+class AlreadyExistsException(val key: Any, cause: Throwable? = null) : Exception("already exists key=$key", cause)
