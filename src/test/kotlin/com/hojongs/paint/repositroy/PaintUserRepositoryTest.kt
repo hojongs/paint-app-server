@@ -1,43 +1,57 @@
 package com.hojongs.paint.repositroy
 
-import com.hojongs.paint.app.App
+import com.hojongs.paint.IntegrationTest
 import com.hojongs.paint.repository.PaintUserRepository
 import com.hojongs.paint.repository.model.PaintUser
-import org.junit.jupiter.api.MethodOrderer
+import io.kotlintest.shouldBe
+import org.junit.jupiter.api.AfterEach
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.TestMethodOrder
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.data.repository.findByIdOrNull
+import org.slf4j.LoggerFactory
 
+// docker run --rm --name mongo -p 27017:27017 -d mongo:4.2.8
+@IntegrationTest
+internal class PaintUserRepositoryTest(
+    private val paintUserRepository: PaintUserRepository
+) {
 
-@SpringBootTest(
-    classes = [App::class],
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
-)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-class PaintUserRepositoryTest {
+    private val log = LoggerFactory.getLogger(this::class.java)
+    private lateinit var savedUser: PaintUser
 
-    @Autowired
-    private lateinit var paintUserRepository: PaintUserRepository
+    @BeforeEach
+    fun setUp() {
+        val user = PaintUser("ema", "pas")
+        savedUser = paintUserRepository.save(user).block()!!
+    }
+
+    @AfterEach
+    fun tearDown() {
+        paintUserRepository.delete(savedUser)
+    }
 
     @Test
-    fun temp() {
-        val savedPaintUser = paintUserRepository.save(
-            PaintUser(
-                "ema",
-                "pas",
-                "dis",
-                true
-            )
-        )
+    fun save() {
+        // given
+        val user = PaintUser("ema", "pas")
 
-        println(savedPaintUser.displayName)
+        // when
+        val savedUser = paintUserRepository.save(user).block()!!
 
-        val foundPaintUser = paintUserRepository.findByIdOrNull("ema")!!
+        // then
+        savedUser::class shouldBe PaintUser::class
+        log.debug("savedUser: $savedUser")
 
-        println(foundPaintUser)
+        // tear down
+        paintUserRepository.deleteById(savedUser.id)
+    }
+
+    @Test
+    fun findById() {
+        // when
+        val foundUser = paintUserRepository.findById(savedUser.id).block()!!
+
+        // then
+        foundUser::class shouldBe PaintUser::class
+        log.debug("foundUser: $foundUser")
     }
 }

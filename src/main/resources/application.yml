@@ -3,25 +3,16 @@ debug: false
 server:
   port: 8080
 
-cloud:
-  aws:
-    credentials:
-      profileName: riiid-dev
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
-
 logging:
   level:
-    com:
-      hojongs: DEBUG
+    com.hojongs: DEBUG
 
 spring:
-  datasource:
-    url: jdbc:h2:file:./tmp/db
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: testdb
 
 ext:
   s3:

@@ -21,43 +21,43 @@ import org.springframework.test.web.reactive.server.WebTestClient
     webEnvironment = WebEnvironment.RANDOM_PORT
 )
 internal class PaintUserControllerTest {
-    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
-
-    @Autowired
-    private lateinit var webTestClient: WebTestClient
-
-    private val mapper = jacksonObjectMapper()
-
-    @Test
-    fun createOne() {
-        val email = "test@example.com"
-        val password = "1234"
-
-        webTestClient
-            .get()
-            .uri { builder ->
-                val queryParams = mapOf(
-                    "email" to listOf(email),
-                    "password" to listOf(password)
-                ).toQueryParams()
-
-                builder
-                    .path("/users/create")
-                    .queryParams(queryParams)
-                    .build()
-            }
-            .exchange()
-            .expectStatus().isOk
-            .expectHeader().contentType(MediaType.APPLICATION_JSON)
-            .expectBody()
-            .consumeWith {
-                val paintUser = mapper.readValue(it.responseBody, PaintUser::class.java)
-
-                logger.debug("createOne - $paintUser")
-
-                paintUser.email shouldBe email
-                paintUser.password shouldBe password
-                paintUser.displayName shouldBe email
-            }
-    }
+//    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+//
+//    @Autowired
+//    private lateinit var webTestClient: WebTestClient
+//
+//    private val mapper = jacksonObjectMapper()
+//
+//    @Test
+//    fun createOne() {
+//        val email = "test@example.com"
+//        val password = "1234"
+//
+//        webTestClient
+//            .get()
+//            .uri { builder ->
+//                val queryParams = mapOf(
+//                    "email" to listOf(email),
+//                    "password" to listOf(password)
+//                ).toQueryParams()
+//
+//                builder
+//                    .path("/users/create")
+//                    .queryParams(queryParams)
+//                    .build()
+//            }
+//            .exchange()
+//            .expectStatus().isOk
+//            .expectHeader().contentType(MediaType.APPLICATION_JSON)
+//            .expectBody()
+//            .consumeWith {
+//                val paintUser = mapper.readValue(it.responseBody, PaintUser::class.java)
+//
+//                logger.debug("createOne - $paintUser")
+//
+//                paintUser.email shouldBe email
+//                paintUser.password shouldBe password
+//                paintUser.displayName shouldBe email
+//            }
+//    }
 }

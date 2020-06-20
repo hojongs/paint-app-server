@@ -1,15 +1,14 @@
 package com.hojongs.paint.repository.model
 
-import javax.persistence.Entity
-import javax.persistence.Id
-import kotlin.random.Random
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 
-@Entity(name = "paint_sessions")
-data class PaintSession(
-    val name: String,
-
-    val password: String,
-
+@Document("paint_sessions")
+class PaintSession private constructor(
     @Id
-    val id: String = "$name-${Random.nextLong(0, 99999+1)}"
-)
+    val id: Long,
+    val name: String,
+    val password: String
+) {
+    constructor(name: String, password: String) : this(0, name, password)
+}

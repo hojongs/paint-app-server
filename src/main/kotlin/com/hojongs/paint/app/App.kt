@@ -1,9 +1,9 @@
 package com.hojongs.paint.app
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.context.annotation.ComponentScan
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
+import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRepositories
 
 @SpringBootApplication
 @ComponentScan(
@@ -11,6 +11,5 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
     "com.hojongs.paint.restcontroller",
     "com.hojongs.paint.service"
 )
-@EnableJpaRepositories("com.hojongs.paint.repository")
-@EntityScan("com.hojongs.paint.repository.model")
+@EnableReactiveMongoRepositories("com.hojongs.paint.repository")
 class App

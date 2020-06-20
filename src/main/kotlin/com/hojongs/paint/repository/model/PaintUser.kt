@@ -1,16 +1,17 @@
 package com.hojongs.paint.repository.model
 
-import javax.persistence.Entity
-import javax.persistence.Id
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
+import java.util.UUID
 
-@Entity(name = "paint_users")
-class PaintUser(
+@Document("paint_users")
+class PaintUser private constructor(
     @Id
-    val email: String = "",
-    val password: String = "",
-    val displayName: String = email,
-    val isEnabled: Boolean = true
+    val id: UUID,
+    val email: String,
+    val password: String
 ) {
+    constructor(email: String, password: String) : this(UUID.randomUUID(), email, password)
 
-    override fun toString(): String = "${this::class}(email=$email,password=$password,displayName=$displayName,isEnabled=$isEnabled)"
+    override fun toString(): String = "PaintUser(id=$id,email=$email,password=$password)"
 }

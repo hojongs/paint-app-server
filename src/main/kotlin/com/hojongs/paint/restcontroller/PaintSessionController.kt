@@ -13,32 +13,32 @@ import kotlin.NoSuchElementException
 @RestController
 @RequestMapping("/sessions")
 class PaintSessionController(
-    private val paintSessionService: PaintSessionService
+//    private val paintSessionService: PaintSessionService
 ) {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
-    // todo user 체크 & session에 대한 권한 체크
-    @GetMapping("/{id}")
-    private fun findById(@PathVariable id: String): PaintSession {
-        return paintSessionService.findById(id)
-    }
-
-    // todo user 체크
-    @GetMapping("/create")
-    private fun createOne(@RequestParam name: String, @RequestParam password: String): PaintSession {
-        return paintSessionService.createPaintSession(name, password)
-    }
-
-    // todo user 체크
-    @GetMapping
-    private fun listPage(@RequestParam(defaultValue = "0") pageNumber: Int): List<PaintSession> =
-        paintSessionService.listSessionPage(pageNumber)
-
-    // todo user 체크
-    @GetMapping("/{id}/join")
-    private fun join(@PathVariable id: String, @RequestParam userId: String): PaintSession =
-        paintSessionService.joinPaintSession(id, UUID.fromString(userId))
+//    // todo user 체크 & session에 대한 권한 체크
+//    @GetMapping("/{id}")
+//    private fun findById(@PathVariable id: String): PaintSession {
+//        return paintSessionService.findById(id)
+//    }
+//
+//    // todo user 체크
+//    @GetMapping("/create")
+//    private fun createOne(@RequestParam name: String, @RequestParam password: String): PaintSession {
+//        return paintSessionService.createPaintSession(name, password)
+//    }
+//
+//    // todo user 체크
+//    @GetMapping
+//    private fun listPage(@RequestParam(defaultValue = "0") pageNumber: Int): List<PaintSession> =
+//        paintSessionService.listSessionPage(pageNumber)
+//
+//    // todo user 체크
+//    @GetMapping("/{id}/join")
+//    private fun join(@PathVariable id: String, @RequestParam userId: String): PaintSession =
+//        paintSessionService.joinPaintSession(id, UUID.fromString(userId))
 
     @ExceptionHandler(NoSuchElementException::class)
     private fun exceptionHandler(err: NoSuchElementException): ResponseEntity<String> =

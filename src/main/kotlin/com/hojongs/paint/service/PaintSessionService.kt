@@ -14,39 +14,39 @@ import kotlin.NoSuchElementException
 class PaintSessionService(
     private val paintSessionRepository: PaintSessionRepository
 ) {
-    companion object {
-        const val PAGE_SIZE = 100
-    }
-
-    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
-
-    fun findById(id: String): PaintSession {
-        return paintSessionRepository
-            .findByIdOrNull(id)
-            ?: throw NoSuchElementException()
-    }
-
-    fun createPaintSession(
-        name: String,
-        password: String
-    ): PaintSession {
-        val entity = PaintSession(name, password)
-
-        return paintSessionRepository.save(entity)
-    }
-
-    fun listSessionPage(pageNumber: Int): List<PaintSession> {
-        return paintSessionRepository
-            .findAll(PageRequest.of(pageNumber, PAGE_SIZE))
-            .content
-    }
-
-    fun joinPaintSession(
-        id: String,
-        userId: UUID
-    ): PaintSession {
-        // todo user service
-        return paintSessionRepository.findByIdOrNull(id)
-            ?: throw NoSuchElementException()
-    }
+//    companion object {
+//        const val PAGE_SIZE = 100
+//    }
+//
+//    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+//
+//    fun findById(id: String): PaintSession {
+//        return paintSessionRepository
+//            .findById(id)
+//            ?: throw NoSuchElementException()
+//    }
+//
+//    fun createPaintSession(
+//        name: String,
+//        password: String
+//    ): PaintSession {
+//        val entity = PaintSession(name, password)
+//
+//        return paintSessionRepository.save(entity)
+//    }
+//
+//    fun listSessionPage(pageNumber: Int): List<PaintSession> {
+//        return paintSessionRepository
+//            .findAll(PageRequest.of(pageNumber, PAGE_SIZE))
+//            .content
+//    }
+//
+//    fun joinPaintSession(
+//        id: String,
+//        userId: UUID
+//    ): PaintSession {
+//        // todo user service
+//        return paintSessionRepository.findByIdOrNull(id)
+//            ?: throw NoSuchElementException()
+//    }
 }
