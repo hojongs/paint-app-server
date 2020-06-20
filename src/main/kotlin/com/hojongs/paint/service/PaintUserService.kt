@@ -1,5 +1,6 @@
 package com.hojongs.paint.service
 
+import com.hojongs.paint.exception.AlreadyExistsException
 import com.hojongs.paint.repository.PaintUserRepository
 import com.hojongs.paint.repository.model.PaintUser
 import org.springframework.stereotype.Service
@@ -15,7 +16,7 @@ class PaintUserService(
 
         return paintUserRepository
             .insert(paintUser)
-            .onErrorMap { Exception("user already exists") }
+            .onErrorMap { AlreadyExistsException(paintUser.id) }
     }
 
     fun signIn(email: String, password: String): Mono<PaintUser> =

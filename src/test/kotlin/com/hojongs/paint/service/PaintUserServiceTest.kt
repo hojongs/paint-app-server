@@ -1,5 +1,6 @@
 package com.hojongs.paint.service
 
+import com.hojongs.paint.exception.AlreadyExistsException
 import com.hojongs.paint.repository.PaintUserRepository
 import com.hojongs.paint.repository.model.PaintUser
 import com.nhaarman.mockitokotlin2.any
@@ -26,18 +27,35 @@ internal class PaintUserServiceTest {
     private val paintUserService = PaintUserService(paintUserRepository)
 
     @Test
+    fun `given exists user when createUser() then AlreadyExistsException error`() {
+        // given
+        val email = UUID.randomUUID().toString()
+        val password = UUID.randomUUID().toString()
+        whenever(paintUserRepository.insert(any<PaintUser>())).then { Mono.error<PaintUser>(Exception()) }
+
+        // when
+        StepVerifier.create(paintUserService.createUser(email, password))
+            // then
+            .verifyErrorMatches {
+                verify(paintUserRepository).insert(any<PaintUser>())
+                it is AlreadyExistsException
+            }
+    }
+
+    @Test
     fun `given new user when createUser() then success`() {
         // given
         val email = UUID.randomUUID().toString()
         val password = UUID.randomUUID().toString()
 
         // when
-        val createdUser = paintUserService.createUser(email, password).block()!!
-
-        // then
-        createdUser.email shouldBe email
-        createdUser.password shouldBe password
-        verify(paintUserRepository).insert(createdUser)
+        StepVerifier.create(paintUserService.createUser(email, password))
+            // then
+            .assertNext { createdUser ->
+                verify(paintUserRepository).insert(createdUser)
+                createdUser.email shouldBe email
+                createdUser.password shouldBe password
+            }
     }
 
     @Test
