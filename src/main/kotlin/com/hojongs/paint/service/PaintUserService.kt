@@ -6,6 +6,7 @@ import com.hojongs.paint.repository.model.PaintUser
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
+import java.util.UUID
 
 @Service
 class PaintUserService(
@@ -29,4 +30,8 @@ class PaintUserService(
         paintUserRepository
             .findByEmailAndPassword(email, password)
             .switchIfEmpty(Mono.error(NoSuchElementException("PaintUser")))
+
+    fun getUser(id: UUID): Mono<PaintUser> {
+        return paintUserRepository.findById(id)
+    }
 }

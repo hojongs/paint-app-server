@@ -101,4 +101,32 @@ internal class PaintUserServiceTest {
             // then
             .verifyErrorMatches { it is NoSuchElementException }
     }
+
+    @Test
+    fun `given not exists user id when getUser() then empty`() {
+        // given
+        val id = UUID.randomUUID()
+        whenever(paintUserRepository.findById(id))
+            .then { Mono.empty<PaintUser>() }
+
+        // when
+        StepVerifier.create(paintUserService.getUser(id))
+            // then
+            .verifyComplete()
+    }
+
+    @Test
+    fun `given exists user id when getUser() then success`() {
+        // given
+        val id = UUID.randomUUID()
+        val user = PaintUser("ema", "pas")
+        whenever(paintUserRepository.findById(id))
+            .then { user.toMono() }
+
+        // when
+        StepVerifier.create(paintUserService.getUser(id))
+            // then
+            .assertNext { it shouldBe user }
+            .verifyComplete()
+    }
 }
