@@ -34,7 +34,7 @@ class PaintSessionService(
         val saveSession = paintSessionRepository.save(entity)
 
         return checkDuplicatedName
-            .flatMap { saveSession }
+            .switchIfEmpty(saveSession)
     }
 
 //    fun listSessionPage(pageNumber: Int): List<PaintSession> {
