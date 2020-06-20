@@ -10,6 +10,7 @@ import java.util.UUID
 open class PaintSession(
     @Id
     val id: UUID = UUID.randomUUID(),
+    val userId: UUID,
     val name: String,
     val password: String,
     val createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC)
