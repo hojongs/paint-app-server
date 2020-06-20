@@ -17,7 +17,7 @@ class PaintUserService(
         val checkExists = paintUserRepository
             .findByEmail(email)
             .flatMap { Mono.error<PaintUser>(AlreadyExistsException(email)) }
-        val paintUser = PaintUser(email, password)
+        val paintUser = PaintUser(email = email, password = password)
         val saveUser = paintUserRepository
             .insert(paintUser)
             .onErrorMap({ it is DuplicateKeyException }) { AlreadyExistsException(paintUser.id, it) }
@@ -33,5 +33,12 @@ class PaintUserService(
 
     fun getUser(id: UUID): Mono<PaintUser> {
         return paintUserRepository.findById(id)
+    }
+
+    // Mono<Void> == Mono.empty()
+    fun deleteUser(id: UUID): Mono<Void> {
+        return getUser(id)
+            .switchIfEmpty(Mono.error(NoSuchElementException(id.toString())))
+            .flatMap { paintUserRepository.deleteById(id) }
     }
 }

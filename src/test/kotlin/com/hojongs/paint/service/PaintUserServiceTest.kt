@@ -4,7 +4,10 @@ import com.hojongs.paint.exception.AlreadyExistsException
 import com.hojongs.paint.repository.PaintUserRepository
 import com.hojongs.paint.repository.model.PaintUser
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.whenever
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.Test
@@ -16,7 +19,7 @@ import java.util.UUID
 
 internal class PaintUserServiceTest {
     private val paintUserRepository = mock<PaintUserRepository>()
-    private val paintUserService = PaintUserService(paintUserRepository)
+    private val paintUserService = spy(PaintUserService(paintUserRepository))
 
     @Test
     fun `given exists email when createUser() then AlreadyExistsException(email) error`() {
@@ -24,7 +27,7 @@ internal class PaintUserServiceTest {
         val email = UUID.randomUUID().toString()
         val password = UUID.randomUUID().toString()
         whenever(paintUserRepository.findByEmail(email))
-            .then { PaintUser(email, password).toMono() }
+            .then { PaintUser(email = email, password = password).toMono() }
         whenever(paintUserRepository.insert(any<PaintUser>()))
             .then { Mono.empty<PaintUser>() }
 
@@ -58,7 +61,7 @@ internal class PaintUserServiceTest {
         whenever(paintUserRepository.findByEmail(email))
             .then { Mono.empty<PaintUser>() }
         whenever(paintUserRepository.insert(any<PaintUser>()))
-            .then { PaintUser(email, password).toMono() }
+            .then { PaintUser(email = email, password = password).toMono() }
 
         // when
         StepVerifier.create(paintUserService.createUser(email, password))
@@ -76,7 +79,7 @@ internal class PaintUserServiceTest {
         val email = UUID.randomUUID().toString()
         val password = UUID.randomUUID().toString()
         whenever(paintUserRepository.findByEmailAndPassword(email, password))
-            .then { PaintUser(email, password).toMono() }
+            .then { PaintUser(email = email, password = password).toMono() }
 
         // when
         StepVerifier.create(paintUserService.signIn(email, password))
@@ -119,7 +122,7 @@ internal class PaintUserServiceTest {
     fun `given exists user id when getUser() then success`() {
         // given
         val id = UUID.randomUUID()
-        val user = PaintUser("ema", "pas")
+        val user = PaintUser(email = "ema", password = "pas")
         whenever(paintUserRepository.findById(id))
             .then { user.toMono() }
 
@@ -127,6 +130,34 @@ internal class PaintUserServiceTest {
         StepVerifier.create(paintUserService.getUser(id))
             // then
             .assertNext { it shouldBe user }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `given not exists user id when deleteUser() then NoSuchElementException error`() {
+        // given
+        val id = UUID.randomUUID()
+        whenever(paintUserRepository.findById(id))
+            .then { Mono.empty<PaintUser>() }
+
+        // when
+        StepVerifier.create(paintUserService.deleteUser(id))
+            // then
+            .verifyErrorMatches { it is NoSuchElementException }
+    }
+
+    @Test
+    fun `given exists user id when deleteUser() then success`() {
+        // given
+        val id = UUID.randomUUID()
+        val user = PaintUser(id = id, email = "ema", password = "pas")
+        doReturn(user.toMono()).whenever(paintUserService).getUser(id)
+        whenever(paintUserRepository.deleteById(id))
+            .then { Mono.empty<Void>() }
+
+        // when
+        StepVerifier.create(paintUserService.deleteUser(id))
+            // then
             .verifyComplete()
     }
 }

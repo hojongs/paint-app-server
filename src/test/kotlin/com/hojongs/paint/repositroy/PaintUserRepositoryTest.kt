@@ -22,7 +22,7 @@ internal class PaintUserRepositoryTest(
 
     @BeforeEach
     fun setUp() {
-        val user = PaintUser("ema", "pas")
+        val user = PaintUser(email = "ema", password = "pas")
         savedUser = paintUserRepository.save(user).block()!!
     }
 
@@ -34,7 +34,7 @@ internal class PaintUserRepositoryTest(
     @Test
     fun `given exists user when insert() then DuplicateKeyException error`() {
         // given
-        val user = PaintUser("ema", "pas")
+        val user = PaintUser(email = "ema", password = "pas")
         val savedUser = paintUserRepository.insert(user).block()!!
 
         // when
@@ -57,7 +57,7 @@ internal class PaintUserRepositoryTest(
     @Test
     fun save() {
         // given
-        val user = PaintUser("ema", "pas")
+        val user = PaintUser(email = "ema", password = "pas")
 
         // when
         val savedUser = paintUserRepository.save(user).block()!!

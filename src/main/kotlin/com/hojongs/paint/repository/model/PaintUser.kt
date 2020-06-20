@@ -7,19 +7,13 @@ import java.time.ZoneOffset.UTC
 import java.util.UUID
 
 @Document("paint_users")
-class PaintUser private constructor(
+class PaintUser(
     @Id
-    val id: UUID,
+    val id: UUID = UUID.randomUUID(),
     val email: String,
     val password: String,
-    val createdAt: LocalDateTime
+    val createdAt: LocalDateTime = LocalDateTime.now(UTC)
 ) {
-    constructor(
-        email: String,
-        password: String,
-        createdAt: LocalDateTime = LocalDateTime.now(UTC)
-    ) : this(UUID.randomUUID(), email, password, createdAt)
-
     override fun toString(): String {
         val className = javaClass.simpleName
         val fields = javaClass.declaredFields.map {
