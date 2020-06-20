@@ -1,25 +1,20 @@
 package com.hojongs.paint.repositroy
 
-import com.hojongs.paint.app.App
+import com.hojongs.paint.IntegrationTest
 import com.hojongs.paint.repository.ResourceRepository
 import com.hojongs.paint.repository.model.PaintEvent
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.context.SpringBootTest
 import kotlin.random.Random
 
-@SpringBootTest(
-    classes = [App::class],
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT
-)
-internal class EventRepositoryTest {
-
+@IntegrationTest
+@Disabled
+internal class EventRepositoryTest(
+    private val eventResourceRepository: ResourceRepository<PaintEvent>
+) {
     private val logger = LoggerFactory.getLogger(javaClass)
-
-    @Autowired
-    private lateinit var eventResourceRepository: ResourceRepository<PaintEvent>
     private val location = "temp-${Random.nextLong(0, Long.MAX_VALUE)}.txt"
 
     @Test
