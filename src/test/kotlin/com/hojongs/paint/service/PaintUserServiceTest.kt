@@ -4,13 +4,12 @@ import com.hojongs.paint.exception.AlreadyExistsException
 import com.hojongs.paint.repository.PaintUserRepository
 import com.hojongs.paint.repository.model.PaintUser
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.whenever
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.Test
+import org.mockito.BDDMockito.will
 import org.springframework.dao.DuplicateKeyException
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.toMono
@@ -26,10 +25,10 @@ internal class PaintUserServiceTest {
         // given
         val email = UUID.randomUUID().toString()
         val password = UUID.randomUUID().toString()
-        whenever(paintUserRepository.findByEmail(email))
-            .then { PaintUser(email = email, password = password).toMono() }
-        whenever(paintUserRepository.insert(any<PaintUser>()))
-            .then { Mono.empty<PaintUser>() }
+        given(paintUserRepository.findByEmail(email))
+            .will { PaintUser(email = email, password = password).toMono() }
+        given(paintUserRepository.insert(any<PaintUser>()))
+            .will { Mono.empty<PaintUser>() }
 
         // when
         StepVerifier.create(paintUserService.createUser(email, password))
@@ -42,10 +41,10 @@ internal class PaintUserServiceTest {
         // given
         val email = UUID.randomUUID().toString()
         val password = UUID.randomUUID().toString()
-        whenever(paintUserRepository.findByEmail(email))
-            .then { Mono.empty<PaintUser>() }
-        whenever(paintUserRepository.insert(any<PaintUser>()))
-            .then { Mono.error<PaintUser>(DuplicateKeyException("")) }
+        given(paintUserRepository.findByEmail(email))
+            .will { Mono.empty<PaintUser>() }
+        given(paintUserRepository.insert(any<PaintUser>()))
+            .will { Mono.error<PaintUser>(DuplicateKeyException("")) }
 
         // when
         StepVerifier.create(paintUserService.createUser(email, password))
@@ -58,10 +57,10 @@ internal class PaintUserServiceTest {
         // given
         val email = UUID.randomUUID().toString()
         val password = UUID.randomUUID().toString()
-        whenever(paintUserRepository.findByEmail(email))
-            .then { Mono.empty<PaintUser>() }
-        whenever(paintUserRepository.insert(any<PaintUser>()))
-            .then { PaintUser(email = email, password = password).toMono() }
+        given(paintUserRepository.findByEmail(email))
+            .will { Mono.empty<PaintUser>() }
+        given(paintUserRepository.insert(any<PaintUser>()))
+            .will { PaintUser(email = email, password = password).toMono() }
 
         // when
         StepVerifier.create(paintUserService.createUser(email, password))
@@ -78,8 +77,8 @@ internal class PaintUserServiceTest {
         // given
         val email = UUID.randomUUID().toString()
         val password = UUID.randomUUID().toString()
-        whenever(paintUserRepository.findByEmailAndPassword(email, password))
-            .then { PaintUser(email = email, password = password).toMono() }
+        given(paintUserRepository.findByEmailAndPassword(email, password))
+            .will { PaintUser(email = email, password = password).toMono() }
 
         // when
         StepVerifier.create(paintUserService.signIn(email, password))
@@ -96,8 +95,8 @@ internal class PaintUserServiceTest {
         // given
         val email = UUID.randomUUID().toString()
         val password = UUID.randomUUID().toString()
-        whenever(paintUserRepository.findByEmailAndPassword(email, password))
-            .then { Mono.empty<PaintUser>() }
+        given(paintUserRepository.findByEmailAndPassword(email, password))
+            .will { Mono.empty<PaintUser>() }
 
         // when
         StepVerifier.create(paintUserService.signIn(email, password))
@@ -109,8 +108,8 @@ internal class PaintUserServiceTest {
     fun `given not exists user id when getUser() then empty`() {
         // given
         val id = UUID.randomUUID()
-        whenever(paintUserRepository.findById(id))
-            .then { Mono.empty<PaintUser>() }
+        given(paintUserRepository.findById(id))
+            .will { Mono.empty<PaintUser>() }
 
         // when
         StepVerifier.create(paintUserService.getUser(id))
@@ -123,8 +122,8 @@ internal class PaintUserServiceTest {
         // given
         val id = UUID.randomUUID()
         val user = PaintUser(email = "ema", password = "pas")
-        whenever(paintUserRepository.findById(id))
-            .then { user.toMono() }
+        given(paintUserRepository.findById(id))
+            .will { user.toMono() }
 
         // when
         StepVerifier.create(paintUserService.getUser(id))
@@ -137,8 +136,8 @@ internal class PaintUserServiceTest {
     fun `given not exists user id when deleteUser() then NoSuchElementException error`() {
         // given
         val id = UUID.randomUUID()
-        whenever(paintUserRepository.findById(id))
-            .then { Mono.empty<PaintUser>() }
+        given(paintUserRepository.findById(id))
+            .will { Mono.empty<PaintUser>() }
 
         // when
         StepVerifier.create(paintUserService.deleteUser(id))
@@ -151,9 +150,9 @@ internal class PaintUserServiceTest {
         // given
         val id = UUID.randomUUID()
         val user = PaintUser(id = id, email = "ema", password = "pas")
-        doReturn(user.toMono()).whenever(paintUserService).getUser(id)
-        whenever(paintUserRepository.deleteById(id))
-            .then { Mono.empty<Void>() }
+        will { user.toMono() }.given(paintUserService).getUser(id)
+        given(paintUserRepository.deleteById(id))
+            .will { Mono.empty<Void>() }
 
         // when
         StepVerifier.create(paintUserService.deleteUser(id))
