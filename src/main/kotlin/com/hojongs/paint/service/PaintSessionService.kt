@@ -4,6 +4,7 @@ import com.hojongs.paint.exception.AlreadyExistsException
 import com.hojongs.paint.repository.model.PaintSession
 import com.hojongs.paint.repository.PaintSessionRepository
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import java.util.*
 
@@ -37,12 +38,10 @@ class PaintSessionService(
             .switchIfEmpty(saveSession)
     }
 
-//    fun listSessionPage(pageNumber: Int): List<PaintSession> {
-//        return paintSessionRepository
-//            .findAll(PageRequest.of(pageNumber, PAGE_SIZE))
-//            .content
-//    }
-//
+    fun listSession(): Flux<PaintSession> {
+        return paintSessionRepository.findAll()
+    }
+
 //    fun joinPaintSession(
 //        id: String,
 //        userId: UUID
