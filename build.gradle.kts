@@ -37,6 +37,7 @@ dependencies {
     }
     testImplementation("io.kotlintest:kotlintest-assertions:3.4.2")
     testImplementation("io.projectreactor:reactor-test")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")
 }
 
 tasks {
