@@ -2,28 +2,22 @@ package com.hojongs.paint.service
 
 import com.hojongs.paint.repository.PaintUserRepository
 import com.hojongs.paint.repository.model.PaintUser
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 
 @Service
 class PaintUserService(
     private val paintUserRepository: PaintUserRepository
 ) {
 
-//    fun signUp(userId: String, password: String, displayName: String): PaintUser {
-//        if (paintUserRepository.existsById(userId))
-//            throw Exception("user already exists")
-//
-//        val paintUser = PaintUser(
-//            email = userId,
-//            password = password,
-//            displayName = displayName
-//        )
-//        val savedUser = paintUserRepository.save(paintUser)
-//
-//        return savedUser
-//    }
-//
+    fun createUser(email: String, password: String): Mono<PaintUser> {
+        val paintUser = PaintUser(email, password)
+
+        return paintUserRepository
+            .insert(paintUser)
+            .onErrorMap { Exception("user already exists") }
+    }
+
 //    fun signIn(userId: String, password: String): PaintUser =
 //        paintUserRepository
 //            .findByIdOrNull(userId)
