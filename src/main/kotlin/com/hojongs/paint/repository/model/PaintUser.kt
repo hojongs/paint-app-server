@@ -19,9 +19,15 @@ open class PaintUser(
         private set
 
     fun joinSession(sessionId: UUID): PaintUser {
-        joinedSessionId = sessionId
+        return this.clone().apply {
+            joinedSessionId = sessionId
+        }
+    }
 
-        return this
+    fun exitSession(): PaintUser {
+        return this.clone().apply {
+            joinedSessionId = null
+        }
     }
 
     override fun equals(other: Any?): Boolean {
@@ -31,7 +37,7 @@ open class PaintUser(
         return super.equals(other)
     }
 
-    public override fun clone(): PaintUser {
+    override fun clone(): PaintUser {
         return super.clone() as PaintUser
     }
 }

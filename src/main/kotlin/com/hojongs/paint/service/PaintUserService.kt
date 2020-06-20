@@ -66,4 +66,17 @@ class PaintUserService(
                 paintUserRepository.save(joinedUser)
             }
     }
+
+    fun exitSession( userId: UUID ): Mono<PaintUser> {
+        return paintUserRepository.findById(userId)
+            .switchIfEmpty(Mono.error(NoSuchElementException("userId=$userId")))
+            .flatMap { foundUser ->
+                if (foundUser.joinedSessionId == null)
+                    throw Exception("user didn't joined any session") // todo test
+                else {
+                    val exitedUser = foundUser.exitSession()
+                    paintUserRepository.save(exitedUser)
+                }
+            }
+    }
 }

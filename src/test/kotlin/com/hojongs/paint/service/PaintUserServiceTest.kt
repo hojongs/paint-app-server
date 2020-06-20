@@ -168,7 +168,7 @@ internal class PaintUserServiceTest {
         // given
         val foundUser = PaintUser(id = UUID.randomUUID(), email = "ema", password = "pas")
         val foundSession = PaintSession(userId = UUID.randomUUID(), name = "sess", password = "sessPas")
-        val joinedUser = foundUser.clone().joinSession(foundSession.id)
+        val joinedUser = foundUser.joinSession(foundSession.id)
         given(paintUserRepository.findById(foundUser.id))
             .will { foundUser.toMono() }
         given(paintSessionRepository.findByNameAndPassword(foundSession.name, foundSession.password))
@@ -182,6 +182,27 @@ internal class PaintUserServiceTest {
             .assertNext {
                 it shouldBe joinedUser
                 it.joinedSessionId shouldBe foundSession.id
+            }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `given session joined user when exitSession() then return exited user`() {
+        // given
+        val foundUser = PaintUser(id = UUID.randomUUID(), joinedSessionId = UUID.randomUUID(), email = "ema", password = "pas")
+        val foundSession = PaintSession(userId = UUID.randomUUID(), name = "sess", password = "sessPas")
+        val exitedUser = foundUser.exitSession()
+        given(paintUserRepository.findById(foundUser.id))
+            .will { foundUser.toMono() }
+        given(paintUserRepository.save(exitedUser))
+            .will { exitedUser.toMono() }
+
+        // when
+        StepVerifier.create(paintUserService.exitSession(foundUser.id))
+            // then
+            .assertNext {
+                it shouldBe exitedUser
+                it.joinedSessionId shouldBe null
             }
             .verifyComplete()
     }
