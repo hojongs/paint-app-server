@@ -3,6 +3,8 @@ package com.hojongs.paint.service
 import com.hojongs.paint.exception.AlreadyExistsException
 import com.hojongs.paint.repository.model.PaintSession
 import com.hojongs.paint.repository.PaintSessionRepository
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -12,17 +14,7 @@ import java.util.*
 class PaintSessionService(
     private val paintSessionRepository: PaintSessionRepository
 ) {
-//    companion object {
-//        const val PAGE_SIZE = 100
-//    }
-//
-//    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
-//
-//    fun findById(id: String): PaintSession {
-//        return paintSessionRepository
-//            .findById(id)
-//            ?: throw NoSuchElementException()
-//    }
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     fun createSession(
         userId: UUID,
