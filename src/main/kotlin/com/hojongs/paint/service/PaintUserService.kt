@@ -18,9 +18,8 @@ class PaintUserService(
             .onErrorMap { Exception("user already exists") }
     }
 
-//    fun signIn(userId: String, password: String): PaintUser =
-//        paintUserRepository
-//            .findByIdOrNull(userId)
-//            ?.takeIf { foundUser: PaintUser -> foundUser.password != password }
-//            ?: throw NoSuchElementException("PaintUser")
+    fun signIn(email: String, password: String): Mono<PaintUser> =
+        paintUserRepository
+            .findByEmailAndPassword(email, password)
+            .switchIfEmpty(Mono.error(NoSuchElementException("PaintUser")))
 }
