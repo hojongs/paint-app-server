@@ -8,6 +8,8 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
+import org.springframework.dao.DuplicateKeyException
+import reactor.test.StepVerifier
 
 // docker run --rm --name mongo -p 27017:27017 -d mongo:4.2.8
 @IntegrationTest
@@ -27,6 +29,29 @@ internal class PaintUserRepositoryTest(
     @AfterEach
     fun tearDown() {
         paintUserRepository.delete(savedUser)
+    }
+
+    @Test
+    fun `given exists user when insert() then DuplicateKeyException error`() {
+        // given
+        val user = PaintUser("ema", "pas")
+        val savedUser = paintUserRepository.insert(user).block()!!
+
+        // when
+        StepVerifier.create(paintUserRepository.insert(savedUser))
+            .verifyErrorMatches { it is DuplicateKeyException }
+
+        // tear down
+        paintUserRepository.deleteById(savedUser.id)
+    }
+
+    @Test
+    fun findAll() {
+        StepVerifier.create(paintUserRepository.findAll().collectList())
+            .assertNext { foundUsers ->
+                log.debug(foundUsers.toString())
+            }
+            .verifyComplete()
     }
 
     @Test
