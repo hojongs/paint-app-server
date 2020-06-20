@@ -6,6 +6,7 @@ import com.hojongs.paint.repository.model.PaintUser
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DuplicateKeyException
@@ -45,7 +46,7 @@ internal class PaintUserRepositoryTest(
         paintUserRepository.deleteById(savedUser.id)
     }
 
-    @Test
+    @RepeatedTest(10)
     fun findAll() {
         StepVerifier.create(paintUserRepository.findAll().collectList())
             .assertNext { foundUsers ->

@@ -2,13 +2,15 @@ package com.hojongs.paint.repository.model
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import java.time.LocalDateTime
+import java.time.ZoneOffset
+import java.util.UUID
 
 @Document("paint_sessions")
-class PaintSession private constructor(
+open class PaintSession(
     @Id
-    val id: Long,
+    val id: UUID = UUID.randomUUID(),
     val name: String,
-    val password: String
-) {
-    constructor(name: String, password: String) : this(0, name, password)
-}
+    val password: String,
+    val createdAt: LocalDateTime = LocalDateTime.now(ZoneOffset.UTC)
+) : BaseEntity()
