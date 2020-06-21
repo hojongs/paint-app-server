@@ -10,7 +10,6 @@ import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DuplicateKeyException
-import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 import java.util.UUID
 
@@ -21,17 +20,17 @@ internal class PaintUserRepositoryTest(
 ) {
 
     private val log = LoggerFactory.getLogger(this::class.java)
-    private lateinit var savedUser: PaintUser
+    private lateinit var testUser: PaintUser
 
     @BeforeEach
     fun setUp() {
         val user = PaintUser(email = "ema", password = "pas")
-        savedUser = paintUserRepository.save(user).block()!!
+        testUser = paintUserRepository.save(user).block()!!
     }
 
     @AfterEach
     fun tearDown() {
-        paintUserRepository.delete(savedUser)
+        paintUserRepository.delete(testUser)
     }
 
     @Test
@@ -76,7 +75,7 @@ internal class PaintUserRepositoryTest(
     @Test
     fun findById() {
         // when
-        val foundUser = paintUserRepository.findById(savedUser.id).block()!!
+        val foundUser = paintUserRepository.findById(testUser.id).block()!!
 
         // then
         foundUser::class shouldBe PaintUser::class
