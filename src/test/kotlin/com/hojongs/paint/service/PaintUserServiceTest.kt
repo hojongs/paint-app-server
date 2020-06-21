@@ -1,6 +1,7 @@
 package com.hojongs.paint.service
 
 import com.hojongs.paint.exception.AlreadyExistsException
+import com.hojongs.paint.exception.NotExistsException
 import com.hojongs.paint.repository.PaintSessionRepository
 import com.hojongs.paint.repository.PaintUserRepository
 import com.hojongs.paint.model.PaintSession
@@ -94,7 +95,7 @@ internal class PaintUserServiceTest {
     }
 
     @Test
-    fun `given not exists user when signIn() then NoSuchElementException error`() {
+    fun `given not exists user when signIn() then NotExistsException error`() {
         // given
         val email = UUID.randomUUID().toString()
         val password = UUID.randomUUID().toString()
@@ -104,7 +105,7 @@ internal class PaintUserServiceTest {
         // when
         StepVerifier.create(paintUserService.signIn(email, password))
             // then
-            .verifyErrorMatches { it is NoSuchElementException }
+            .verifyErrorMatches { it is NotExistsException }
     }
 
     @Test
@@ -136,7 +137,7 @@ internal class PaintUserServiceTest {
     }
 
     @Test
-    fun `given not exists user id when deleteUser() then NoSuchElementException error`() {
+    fun `given not exists user id when deleteUser() then NotExistsException error`() {
         // given
         val id = UUID.randomUUID()
         given(paintUserRepository.findById(id))
@@ -145,7 +146,7 @@ internal class PaintUserServiceTest {
         // when
         StepVerifier.create(paintUserService.deleteUser(id))
             // then
-            .verifyErrorMatches { it is NoSuchElementException }
+            .verifyErrorMatches { it is NotExistsException }
     }
 
     @Test

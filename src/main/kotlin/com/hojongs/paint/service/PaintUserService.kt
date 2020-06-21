@@ -1,6 +1,7 @@
 package com.hojongs.paint.service
 
 import com.hojongs.paint.exception.AlreadyExistsException
+import com.hojongs.paint.exception.NotExistsException
 import com.hojongs.paint.repository.PaintSessionRepository
 import com.hojongs.paint.repository.PaintUserRepository
 import com.hojongs.paint.model.PaintUser
@@ -31,7 +32,7 @@ class PaintUserService(
     fun signIn(email: String, password: String): Mono<PaintUser> =
         paintUserRepository
             .findByEmailAndPassword(email, password)
-            .switchIfEmpty(Mono.error(NoSuchElementException("PaintUser")))
+            .switchIfEmpty(Mono.error(NotExistsException("$email, password=...")))
 
     fun getUser(id: UUID): Mono<PaintUser> {
         return paintUserRepository.findById(id)
@@ -40,7 +41,7 @@ class PaintUserService(
     // Mono<Void> == Mono.empty()
     fun deleteUser(id: UUID): Mono<Void> {
         return getUser(id)
-            .switchIfEmpty(Mono.error(NoSuchElementException(id.toString())))
+            .switchIfEmpty(Mono.error(NotExistsException(id)))
             .flatMap { paintUserRepository.deleteById(id) }
     }
 
@@ -50,9 +51,9 @@ class PaintUserService(
         password: String
     ): Mono<PaintUser> {
         val findUser = paintUserRepository.findById(userId)
-            .switchIfEmpty(Mono.error(java.util.NoSuchElementException("userId=$userId")))
+            .switchIfEmpty(Mono.error(NotExistsException("$userId")))
         val findSession = paintSessionRepository.findByNameAndPassword(name, password)
-            .switchIfEmpty(Mono.error(java.util.NoSuchElementException("name=$name")))
+            .switchIfEmpty(Mono.error(NotExistsException("$name, password=...")))
         return Mono
             .zip(
                 findUser,
@@ -68,7 +69,7 @@ class PaintUserService(
 
     fun exitSession( userId: UUID ): Mono<PaintUser> {
         return paintUserRepository.findById(userId)
-            .switchIfEmpty(Mono.error(NoSuchElementException("userId=$userId")))
+            .switchIfEmpty(Mono.error(NotExistsException("$userId")))
             .flatMap { foundUser ->
                 if (foundUser.joinedSessionId == null)
                     throw Exception("user didn't joined any session") // todo test
