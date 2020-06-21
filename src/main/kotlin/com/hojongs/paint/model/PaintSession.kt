@@ -1,4 +1,4 @@
-package com.hojongs.paint.repository.model
+package com.hojongs.paint.model
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document

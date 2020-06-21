@@ -2,7 +2,7 @@ package com.hojongs.paint.repositroy
 
 import com.hojongs.paint.IntegrationTest
 import com.hojongs.paint.repository.ResourceRepository
-import com.hojongs.paint.repository.model.PaintEvent
+import com.hojongs.paint.model.PaintEvent
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows

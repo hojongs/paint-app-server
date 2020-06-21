@@ -2,7 +2,7 @@ package com.hojongs.paint.repositroy
 
 import com.hojongs.paint.IntegrationTest
 import com.hojongs.paint.repository.PaintUserRepository
-import com.hojongs.paint.repository.model.PaintUser
+import com.hojongs.paint.model.PaintUser
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach

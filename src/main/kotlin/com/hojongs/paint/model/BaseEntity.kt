@@ -1,4 +1,4 @@
-package com.hojongs.paint.repository.model
+package com.hojongs.paint.model
 
 open class BaseEntity {
     // todo check performance

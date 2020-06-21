@@ -2,7 +2,7 @@ package com.hojongs.paint.repositroy
 
 import com.hojongs.paint.IntegrationTest
 import com.hojongs.paint.repository.PaintSessionRepository
-import com.hojongs.paint.repository.model.PaintSession
+import com.hojongs.paint.model.PaintSession
 import io.kotlintest.shouldBe
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach

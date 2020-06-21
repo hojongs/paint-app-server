@@ -3,8 +3,8 @@ package com.hojongs.paint.service
 import com.hojongs.paint.exception.AlreadyExistsException
 import com.hojongs.paint.repository.PaintSessionRepository
 import com.hojongs.paint.repository.PaintUserRepository
-import com.hojongs.paint.repository.model.PaintSession
-import com.hojongs.paint.repository.model.PaintUser
+import com.hojongs.paint.model.PaintSession
+import com.hojongs.paint.model.PaintUser
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock

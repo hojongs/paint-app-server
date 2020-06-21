@@ -1,7 +1,7 @@
 package com.hojongs.paint.repository
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.hojongs.paint.repository.model.PaintEvent
+import com.hojongs.paint.model.PaintEvent
 import org.slf4j.LoggerFactory
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader

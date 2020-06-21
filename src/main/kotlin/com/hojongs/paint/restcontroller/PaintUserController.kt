@@ -1,10 +1,8 @@
 package com.hojongs.paint.restcontroller
 
-import com.hojongs.paint.repository.model.PaintUser
 import com.hojongs.paint.service.PaintUserService
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.*
-import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("/users")

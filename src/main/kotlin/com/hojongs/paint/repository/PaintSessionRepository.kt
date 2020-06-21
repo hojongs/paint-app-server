@@ -1,6 +1,6 @@
 package com.hojongs.paint.repository
 
-import com.hojongs.paint.repository.model.PaintSession
+import com.hojongs.paint.model.PaintSession
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import reactor.core.publisher.Mono
