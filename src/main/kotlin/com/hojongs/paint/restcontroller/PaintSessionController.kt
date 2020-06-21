@@ -32,11 +32,15 @@ class PaintSessionController(
             .flatMap { paintSessionService.createSession(userId, name, password) }
     }
 
-//    // todo user 체크
-//    @GetMapping
-//    private fun listPage(@RequestParam(defaultValue = "0") pageNumber: Int): List<PaintSession> =
-//        paintSessionService.listSessionPage(pageNumber)
-//
+    @GetMapping
+    private fun listSession(
+        @RequestParam userId: UUID
+    ): Mono<List<PaintSession>> {
+        return authenticationService
+            .authenticate(userId)
+            .flatMap { paintSessionService.listSession().collectList() }
+    }
+
 //    // todo user 체크
 //    @GetMapping("/{id}/join")
 //    private fun join(@PathVariable id: String, @RequestParam userId: String): PaintSession =
