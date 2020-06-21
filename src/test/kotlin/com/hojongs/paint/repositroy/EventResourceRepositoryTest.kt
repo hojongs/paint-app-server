@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import org.slf4j.LoggerFactory
+import java.util.UUID
 import kotlin.random.Random
 
 @IntegrationTest
@@ -20,7 +21,9 @@ internal class EventResourceRepositoryTest(
     @Test
     fun `save - success`() {
         val paintEvent = PaintEvent(
-            "release"
+            userId = UUID.randomUUID(),
+            sessionId = UUID.randomUUID(),
+            eventType = PaintEvent.Type.NONE.name
         )
 
         eventResourceRepository.save(location, paintEvent)
