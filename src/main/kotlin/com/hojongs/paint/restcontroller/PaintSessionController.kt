@@ -1,5 +1,6 @@
 package com.hojongs.paint.restcontroller
 
+import com.hojongs.paint.exception.NotExistsException
 import com.hojongs.paint.model.PaintSession
 import com.hojongs.paint.service.AuthenticationService
 import com.hojongs.paint.service.PaintSessionService
@@ -41,7 +42,7 @@ class PaintSessionController(
             .flatMap { paintSessionService.listSession().collectList() }
     }
 
-    @ExceptionHandler(NoSuchElementException::class)
-    private fun exceptionHandler(err: NoSuchElementException): ResponseEntity<String> =
+    @ExceptionHandler(NotExistsException::class)
+    private fun exceptionHandler(err: NotExistsException): ResponseEntity<String> =
         ResponseEntity(err.message, HttpStatus.NO_CONTENT)
 }
