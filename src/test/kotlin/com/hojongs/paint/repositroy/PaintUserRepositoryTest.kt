@@ -10,7 +10,9 @@ import org.junit.jupiter.api.RepeatedTest
 import org.junit.jupiter.api.Test
 import org.slf4j.LoggerFactory
 import org.springframework.dao.DuplicateKeyException
+import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
+import java.util.UUID
 
 // docker run --rm --name mongo -p 27017:27017 -d mongo:4.2.8
 @IntegrationTest
@@ -79,5 +81,45 @@ internal class PaintUserRepositoryTest(
         // then
         foundUser::class shouldBe PaintUser::class
         log.debug("foundUser: $foundUser")
+    }
+
+    @Test
+    fun findByJoinedSessionId() {
+        // given
+        val sessionId = UUID.randomUUID()
+        val joinedUsers = IntRange(0, 3).map {
+            PaintUser(
+                email = "ema$it",
+                password = "pas",
+                joinedSessionId = sessionId
+            )
+        }
+        val notJoinedUsers = listOf(
+            PaintUser(
+                email = "emaa",
+                password = "pas",
+                joinedSessionId = UUID.randomUUID()
+            ),
+            PaintUser(
+                email = "emaa",
+                password = "pas",
+                joinedSessionId = null
+            )
+        )
+        val savedUsers = paintUserRepository
+            .saveAll(joinedUsers + notJoinedUsers)
+            .collectList()
+            .block()!!
+
+        // when
+        StepVerifier.create(paintUserRepository.findByJoinedSessionId(sessionId).collectList())
+            // then
+            .assertNext {
+                it.size shouldBe 4
+
+                // tear down
+                paintUserRepository.deleteAll(savedUsers)
+            }
+            .verifyComplete()
     }
 }
