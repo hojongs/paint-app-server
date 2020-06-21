@@ -11,7 +11,7 @@ import kotlin.random.Random
 
 @IntegrationTest
 @Disabled
-internal class EventRepositoryTest(
+internal class EventResourceRepositoryTest(
     private val eventResourceRepository: ResourceRepository<PaintEvent>
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)

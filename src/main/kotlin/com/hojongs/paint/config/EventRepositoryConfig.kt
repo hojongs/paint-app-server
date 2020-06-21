@@ -1,6 +1,6 @@
 package com.hojongs.paint.config
 
-import com.hojongs.paint.repository.EventRepository
+import com.hojongs.paint.repository.EventResourceRepository
 import com.hojongs.paint.repository.ResourceRepository
 import com.hojongs.paint.model.PaintEvent
 import org.springframework.beans.factory.annotation.Value
@@ -16,5 +16,5 @@ class EventRepositoryConfig {
     @Bean
     fun eventResourceRepository(
         resourceLoader: ResourceLoader
-    ): ResourceRepository<PaintEvent> = EventRepository(resourceLoader, bucketName)
+    ): ResourceRepository<PaintEvent> = EventResourceRepository(resourceLoader, bucketName)
 }

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 import java.nio.ByteBuffer
 
 @Repository
-class EventRepository(
+class EventResourceRepository(
     private val resourceLoader: ResourceLoader,
     bucketName: String
 ) : ResourceRepository<PaintEvent> {
