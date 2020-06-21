@@ -41,11 +41,6 @@ class PaintSessionController(
             .flatMap { paintSessionService.listSession().collectList() }
     }
 
-//    // todo user 체크
-//    @GetMapping("/{id}/join")
-//    private fun join(@PathVariable id: String, @RequestParam userId: String): PaintSession =
-//        paintSessionService.joinPaintSession(id, UUID.fromString(userId))
-
     @ExceptionHandler(NoSuchElementException::class)
     private fun exceptionHandler(err: NoSuchElementException): ResponseEntity<String> =
         ResponseEntity(err.message, HttpStatus.NO_CONTENT)
